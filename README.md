@@ -1,6 +1,13 @@
 # Zoho CRM Widgets
 This repository is meant to be a pragmatic intro to building Widgets in Zoho CRM. Zoho CRM Widgets allow you to create a small web app embedded in Zoho CRM using JavaScript. To be able to build meaningful widgets you will need basic knowledge of HTML, CSS, and JavaScript (including Promises). 
 
+Here are some JavaScript resources that are pretty good:
+- [Free Code Camp YouTube Tutorial](https://www.youtube.com/watch?v=PkZNo7MFNFg)
+- [Eloquent JavaScript](https://eloquentjavascript.net/)
+- [W3 Schools JavaScript Reference](https://www.w3schools.com/jsref/default.asp)
+
+There's an absurd amount of JavaScript content on the internet, so just find what works for you.
+
 ## Why CRM Widgets?
 CRM Widgets game-changers when you need additional functionality in Zoho CRM, but Deluge functions and workflow rules don't cut it. Some examples of this are mass updates of records with a Lookup field or mass updating related records. These are perfect use cases for widgets.
 
@@ -190,9 +197,12 @@ With the console visible, click the newly created button. You should see the ent
 {EntityId: Array(1), Entity: "Contacts", ButtonPosition: "DetailView"}
 ```
 
-You are now setup to build the widget of your dreams. Here are some things to note about building a CRM Widget:
+
+### Build the Widget
+You are now setup to build the widget of your dreams. We won't cover how to build a JavaScript applicaton, so you're on your own there. Here are some things to note about building a CRM Widget:
 - To use the Zoho CRM API, you will use functions from the Zoho JS SDK we included early. You can see the JS API reference [here](https://help.zwidgets.com/help/latest/index.html).
 - You can use any JavaScript or CSS framework you would like within your widget.
+
 
 ### Uploading the Production Widget
 When you are done with development, it is time to upload your final version as a zip file to Zoho CRM. To zip your widget, navigate to your project in the terminal and execute:
