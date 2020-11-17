@@ -31,13 +31,17 @@ NPM comes with Node.js, so you won't need to worry about that. Before we move on
 
 Open your terminal and execute the following:
 
-`$ node -v`
+```
+$ node -v
+```
 
 Which should output something like: `v12.18.4`
 
 Then execute:
 
-  `$ npm -v`
+  ```
+  $ npm -v
+  ```
 
 Which should output something like: `6.14.6`
 
@@ -49,11 +53,15 @@ Zoho has created a CLI (Command Line Interface) for creating CRM Widgets and Ext
 
 To install the CLI run the following command in your terminal:
 
-  `$ npm install -g zoho-extension-toolkit`
+  ```
+  $ npm install -g zoho-extension-toolkit
+  ```
 
 When it is done installing, test it worked properly by executing the following in your terminal:
 
-  `$ zet`
+  ```
+  $ zet
+  ```
 
 You should get a response similar to: 
 ```
@@ -75,7 +83,9 @@ You should now be ready to get started with your project.
 ### Initialize Your Project
 Through the Zoho CLI, you can very quickly start a project. Open your terminal and navigate to the directory you want to create a new project within. Run the following command in your terminal:
 
-  `$ zet init`
+  ```
+  $ zet init
+  ```
   
  You will now see an interface for entering your project's information. Input the following for the input:
 
@@ -89,12 +99,16 @@ Project Name
 
 Your project should now be setup. Now navigate to your project's directory with
  
- `$ cd * YOUR PROJECT NAME *`
+ ```
+ $ cd * YOUR PROJECT NAME *
+ ```
 
 ### Run Your App
 Now that you're in your project's directory, let's start our project in the browser. Execute the following:
 
-  `$ zet run`
+  ```
+  $ zet run
+  ```
   
 Now navigate to [https://127.0.0.1:5000/widget.html](https://127.0.0.1:5000/widget.html) in your browser. You will probably get a security screen saying this is unsafe. If you are using Google Chrome, click anywhere on the screen and type "thisisunsafe" and it will let you through.
 
@@ -105,7 +119,9 @@ To add this package to your project, you will need to include it into your HTML 
 
 Open up your code editor and open up `app/widget.html`. We're now going to include the Zoho JS SDK in our project. Paste the following in the `<head>` of your HTML:
 
-  `<script src="https://live.zwidgets.com/js-sdk/1.0.5/ZohoEmbededAppSDK.min.js"></script>`
+  ```
+  <script src="https://live.zwidgets.com/js-sdk/1.0.5/ZohoEmbededAppSDK.min.js"></script>
+  ```
 
 The head should now look something like this:
 ```
@@ -115,10 +131,15 @@ The head should now look something like this:
   </head>
 ```
 
-Within the same directory as your `widget.html` file, create two more directories titled `js` and `css`. This will contain your JavaScript and CSS, respectively. In the `js` directory, create a file called `app.js` (or whatever you want). To register your widget with Zoho CRM, you need to add the following code to your `app.js` file:
+Within the same directory as your `widget.html` file, create two more directories titled `js` and `css`. This will contain your JavaScript and CSS, respectively. In the `js` directory, create a file called `app.js` (or whatever you want). Now add the following line *below* the Zoho JS SDK in your HTML file:
+
+  ```<script src="js/app.js"></script>```
+
+
+You now need to initialize your JavaScript application with Zoho CRM. You do that by inserting the following into your `app.js` file:
 
 ```
-  // Get Entity Data from CRM
+  // Get Entity Data from CRM (Note: this only works within Zoho CRM)
   ZOHO.embeddedApp.on("PageLoad", entity => {
       // This is the information about the current record, if applicable.
       console.log(entity);
@@ -128,8 +149,61 @@ Within the same directory as your `widget.html` file, create two more directorie
   ZOHO.embeddedApp.init();
 ```
 
-Note that the above code only works when running within a Zoho CRM environment.
+Now that your have the right setup, let's get our project installed in Zoho CRM.
 
 ### Embedding Your Project in Zoho CRM
+To get our project to start running within Zoho CRM we need to setup two things: Widgets and Buttons.
 
-### Conneting to the Zoho CRM API
+#### Creating a New Widget
+Go to *Setup* -> *Developer Space / Widgets* and click *Create New Widget*.
+
+Add the following configurations to your project:
+```
+Name: *YOUR WIDGET NAME*
+Widget Type: Button
+Hosting: External
+Base URL: https://127.0.0.1:5000/app/widget.html
+```
+
+This setup will pull in the widget running on your local web server into Zoho CRM. Since this is the case, it will only work when you are on your machine while your app is running. Because of this, we will only do this during development. When we put the widget into production you will upload a zip file of your project.
+
+#### Creating a New Button
+Go to *Setup* -> *Customization / Modules and Fields*, then select the module you want to host the button. Go to the *Links and Buttons* tab and select *New Button*. Add the following configuration to setup your button:
+
+```
+Name: *YOUR BUTTON NAME*
+Where would you like to place the button?
+  View Page
+  
+What action would you like the button to perform?
+  Open a Widget
+  Install your new widget.
+```
+
+Click save. Now navigate to the module you put the button on and select a record.
+
+Open the Developer Tools in your browser to be able to see the console. In Chrome, right-click and select *Inspect*.
+
+With the console visible, click the newly created button. You should see the entity information in your console. It will be structured similar to the following:
+
+```
+{EntityId: Array(1), Entity: "Contacts", ButtonPosition: "DetailView"}
+```
+
+You are now setup to build the widget of your dreams. Here are some things to note about building a CRM Widget:
+- To use the Zoho CRM API, you will use functions from the Zoho JS SDK we included early. You can see the JS API reference [here](https://help.zwidgets.com/help/latest/index.html).
+- You can use any JavaScript or CSS framework you would like within your widget.
+
+### Uploading the Production Widget
+When you are done with development, it is time to upload your final version as a zip file to Zoho CRM. To zip your widget, navigate to your project in the terminal and execute:
+```
+  $ zet pack
+```
+
+This will pack your project into a zip file that you can upload into Zoho CRM. You can find this zip file in the `dist` directory inside your widget's directory. 
+
+Go to your widget (*Setup* -> *Developer Space / Widgets*) and click the *Settings* icon, then *Edit*.
+
+Change the *Hosting* to *Zoho* and upload your zip file in *File Upload*. Your *Index Page* (unless you have moved the widget.html file) will be `/widget.html`. 
+
+Any user can now use your new widget. If it is not working, delete the Button and create a new one, then install the widget in that button.
